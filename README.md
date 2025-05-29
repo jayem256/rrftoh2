@@ -5,6 +5,8 @@ Simple Golang HTTP/2 service which enforces the use of `h2` and allows listing a
 There's nothing particularly performant streaming data over single HTTP/2 stream, but since all major 
 browsers support using `gzip` encoding, this service makes use of it and compresses files on the fly.
 Over slower connection speeds it can significantly decrease download times depending on type of data.
+This implementation is using client side certificates as authentication method. Clients failing to
+provide accepted certs will get disconnected before serving HTTP/2 requests.
 
 ## Usage
 This implementation enforces clients use `h2` and thus always requires use of TLS. There's example 
@@ -21,6 +23,16 @@ size sets initial flow control window of Golang's HTTP/2 server.
     "cert": "./server.crt",
     "key": "./server.key",
     "windowSize": 104857600
+}
+```
+
+**Client** object contains list of accepted client CAs for client side cert verification. Example certs
+are provided for client as well. If your client is a browser, check guide or settings for how to add certs.
+For instance in Firefox one could add the provided `client.p12` by navigating to **View Certificates** in 
+security settings and then import it with `test1234` as password.
+```
+"client": {
+    "certPool": ["./certs/client.crt"]
 }
 ```
 
