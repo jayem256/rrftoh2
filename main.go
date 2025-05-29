@@ -2,8 +2,10 @@ package main
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"net"
+	"os"
 	"rrftoh2/config"
 	"rrftoh2/constants"
 	"rrftoh2/h2server"
@@ -35,6 +37,19 @@ func main() {
 		panic(err)
 	}
 
+	// Load client certs.
+	acceptedCA := x509.NewCertPool()
+
+	for _, fileName := range cfg.Client.CertPool {
+		fb, err := os.ReadFile(fileName)
+		if err != nil {
+			panic(err)
+		}
+		if !acceptedCA.AppendCertsFromPEM(fb) {
+			fmt.Println("Could not add " + fileName + " to CA pool")
+		}
+	}
+
 	// Listen for incoming connections.
 	l, err := net.ListenTCP(constants.NETWORK, res)
 	fmt.Println("Now listening for connections on " + addr)
@@ -57,7 +72,7 @@ func main() {
 			// Set TCP_NODELAY.
 			conn.SetNoDelay(true)
 			// Handle TLS handshake and serve HTTP2.
-			go h2server.ServeH2(conn, cer, serve, &cfg)
+			go h2server.ServeH2(conn, cer, acceptedCA, serve, &cfg)
 		}
 	}
 }

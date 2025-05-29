@@ -3,6 +3,7 @@ package config
 // Config root type
 type Config struct {
 	Server      ServerType      `json:"server"`
+	Client      ClientType      `json:"client"`
 	File        FileType        `json:"file"`
 	Compression CompressionType `json:"compression"`
 }
@@ -15,6 +16,11 @@ type ServerType struct {
 	Cert       string `json:"cert"`
 	Key        string `json:"key"`
 	WindowSize int    `json:"windowSize"`
+}
+
+// ClientType contains client certificate pool
+type ClientType struct {
+	CertPool []string `json:"certPool"`
 }
 
 // FileType contains file I/O related settings

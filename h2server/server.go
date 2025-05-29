@@ -2,6 +2,7 @@ package h2server
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"errors"
 	"fmt"
 	"net"
@@ -13,9 +14,13 @@ import (
 )
 
 // ServeH2 performs TLS handshake on connection and handles it as h2 connection
-func ServeH2(conn net.Conn, cer tls.Certificate, server *http2.Server, cfg *config.Config) {
+func ServeH2(conn net.Conn, cer tls.Certificate, clientCAs *x509.CertPool, server *http2.Server, cfg *config.Config) {
 	// Wrap it as TLS connection.
 	tlsconn := tls.Server(conn, &tls.Config{
+		// Require client certificate.
+		ClientAuth: tls.RequireAndVerifyClientCert,
+		// Client cert pool.
+		ClientCAs:  clientCAs,
 		ServerName: cfg.Server.HostName,
 		// Server cert.
 		Certificates: []tls.Certificate{cer},

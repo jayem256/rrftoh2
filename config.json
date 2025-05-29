@@ -3,9 +3,12 @@
     "hostName": "Test",
     "bindAddr": "0.0.0.0",
     "port": 443,
-    "cert": "./server.crt",
-    "key": "./server.key",
+    "cert": "./certs/server.crt",
+    "key": "./certs/server.key",
     "windowSize": 104857600
+  },
+  "client": {
+    "certPool": ["./certs/client.crt"]
   },
   "file": {
     "docRoot": "./",
