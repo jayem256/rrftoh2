@@ -103,6 +103,9 @@ func (s *RequestHandler) ServeHTTP(rw http.ResponseWriter, rq *http.Request) {
 					flusha.Flush()
 					// Get gzip stream.
 					chunkStream = file.GzipStreamify(chunkStream, s.GzBuffer)
+				} else {
+					// No compression. We know the file size ahead of time.
+					rw.Header().Set("Content-Length", strconv.Itoa(int(info.Size())))
 				}
 
 				// Stream chunks.

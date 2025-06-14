@@ -10,6 +10,7 @@ import (
 	"rrftoh2/constants"
 	"rrftoh2/h2server"
 	"strconv"
+	"time"
 
 	"golang.org/x/net/http2"
 )
@@ -61,13 +62,13 @@ func main() {
 	serve := &http2.Server{
 		MaxUploadBufferPerConnection: int32(cfg.Server.WindowSize),
 		MaxUploadBufferPerStream:     int32(cfg.Server.WindowSize),
+		IdleTimeout:                  time.Second * 30,
 	}
 
 	// Wait for incoming connections.
 	for {
 		// Handle incoming connection.
 		conn, err := l.AcceptTCP()
-
 		if err == nil {
 			// Set TCP_NODELAY.
 			conn.SetNoDelay(true)
