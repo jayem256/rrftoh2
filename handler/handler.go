@@ -71,6 +71,8 @@ func (s *RequestHandler) ServeHTTP(rw http.ResponseWriter, rq *http.Request) {
 		}
 		// Root path provides file listing.
 		if rq.RequestURI == "/" {
+			// Set content type.
+			rw.Header().Set("Content-Type", "text/html")
 			// Compose and send HTML.
 			rw.Write([]byte(head +
 				"    <title>" +
