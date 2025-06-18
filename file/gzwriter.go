@@ -17,8 +17,15 @@ func (g *GzipBufferedWriter) NewWriter(out chan []byte) *GzipBufferedWriter {
 
 // Write takes in compressed chunks and either buffers or writes to channel
 func (g *GzipBufferedWriter) Write(p []byte) (int, error) {
+	plen := len(p)
+	// Check if there's more data than we could ever buffer.
+	if plen > g.bufferSize && len(g.buf) == 0 {
+		// Stream as is.
+		g.out <- p
+		return plen, nil
+	}
 	// Check if buffer can take another slice.
-	if len(g.buf)+len(p) > g.bufferSize {
+	if len(g.buf)+plen > g.bufferSize {
 		// Stream current buffer contents.
 		g.out <- g.buf
 		// New empty buffer.
@@ -29,7 +36,7 @@ func (g *GzipBufferedWriter) Write(p []byte) (int, error) {
 		// Append slice to buffer.
 		g.buf = append(g.buf, p...)
 	}
-	return len(p), nil
+	return plen, nil
 }
 
 // Close flushes remaining data and closes output channel
