@@ -12,12 +12,12 @@
   },
   "file": {
     "docRoot": "./",
-    "bufferedRead": 262144
+    "bufferedRead": 524288
   },
   "compression": {
     "enableGzip": true,
     "compressionTreshold": 10485760,
-    "gzipBuffer": 65536,
+    "gzipBuffer": 4194304,
     "omitExtensions": [
       "zip", "jpg", "mkv", "png", "tar", "gz", 
       "rar", "mp4", "avi", "gif", "mp3", "webp"
